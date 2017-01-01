@@ -6,7 +6,7 @@ Script to export pads and associated images, from search on Hackpad.com
 - Python library PyYAML: http://pyyaml.org/
 
 ## How-To :
-* configure the parameter file
+* update the parameter file :
     * consumer_key and consumer_secret: see your API key in your [account settings](https://hackpad.com/ep/account/settings/) 
     * subdomain: mysubdomain for http://mysubdomain.hackpad.com, leave empty if you're not using a subdomain
     * format: 'md', 'html' or 'txt'

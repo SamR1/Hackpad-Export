@@ -7,13 +7,13 @@ If you use [Jingo](https://github.com/claudioc/jingo), you can import **.md** fi
   
 ## Prerequisites :
 - Python 3 (tested with 3.5)
-- PyYAML: http://pyyaml.org/
+- [PyYAML](http://pyyaml.org)
 - for **hackpad-exportAllPads.py** :
     - [BeautifulSoup4](https://pypi.python.org/pypi/beautifulsoup4)
     - [Python-Markdown](https://pythonhosted.org/Markdown/)
 - for **hackpad-exportFromSearch.py** :
     - [Paramiko](http://www.paramiko.org/)
-
+  
 ## How-To :
 * update the parameter file :
     * **consumer_key** and **consumer_secret**: see your API key in your [account settings](https://hackpad.com/ep/account/settings/) 

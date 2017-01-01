@@ -1,6 +1,8 @@
 from hackpad import Hackpad
 import os
+import paramiko
 import re
+import shutil
 import string
 import sys
 import tempfile
@@ -25,6 +27,12 @@ with open("parameters.yml", 'r') as stream:
 
 hackpad = Hackpad(config['subdomain'], consumer_key=config['consumer_key'], consumer_secret=config['consumer_secret'])
 keyword = sys.argv[1]
+import2jingo = config['jingo']['import'] and
+tmpPath = tempfile.gettempdir()
+
+if import2jingo:
+    paramiko.util.log_to_file('%s/paramiko.log' % tmpPath)
+    regex = re.compile(r'!\[(\w*)\]\([[a-zA-Z.-:-_]*\)', re.IGNORECASE)
 
 print('=> Searching pads with following keyword : %s' % keyword)
 params = {}
@@ -34,46 +42,77 @@ nbPads = str(len(listPads))
 print(nbPads + ' pad(s) retrieved')
 print('')
 
+if len(listPads) > 0:
 
-for pad in listPads:
+    if import2jingo:
+        transport = paramiko.Transport((config['jingo']['host'], config['jingo']['port']))
+        transport.connect(username=config['jingo']['user'], password=config['jingo']['password'])
+        sftp = paramiko.SFTPClient.from_transport(transport)
 
-    padTitle = pad['title']
-    padTitle = format_filename(padTitle)
-    padId = pad['localPadId']
+    for pad in listPads:
 
-    print('==> Downloading Pad %s/%s: %s' % (str(listPads.index(pad) + 1), nbPads, padTitle))
-    padUrl = 'pad/%s/content/%s.%s' % (padId, 'latest', config['format'])
-    print('Fetching from : %s' % padUrl)
-    content = hackpad.do_api_request(padUrl, 'GET', params)
-    content = content.decode(config['encoding'])
+        padTitle = pad['title']
+        padTitle = format_filename(padTitle)
+        padId = pad['localPadId']
 
-    tmpPath = tempfile.gettempdir()
-    filePath = '%s/export-hackpad/%s' % (tmpPath, padTitle)
-    fileFullPath = '%s/%s.%s' % (filePath, padTitle, 'md')
+        print('==> Downloading Pad %s/%s: %s' % (str(listPads.index(pad) + 1), nbPads, padTitle))
+        padUrl = 'pad/%s/content/%s.%s' % (padId, 'latest', config['format'])
+        print('Fetching from : %s' % padUrl)
+        content = hackpad.do_api_request(padUrl, 'GET', params)
+        content = content.decode(config['encoding'])
 
-    os.makedirs(filePath, exist_ok=True)
-    file = open(fileFullPath, "a")
-    file.write(content)
-    file.close()
+        filePath = '%s/export-hackpad-jingo/%s' % (tmpPath, padTitle)
+        fileFullPath = '%s/%s.%s' % (filePath, padTitle, config['format'])
+        tempFullPath = '%s/%s.%s.tmp' % (filePath, padTitle, config['format'])
 
-    print('Searching images')
-    file = open(fileFullPath, "r")
-    for line in file:
+        os.makedirs(filePath, exist_ok=True)
+        file = open(fileFullPath, "a")
+        file.write(content)
+        file.close()
 
-        result = re.search(r'!\[(\w*)\]\([[a-zA-Z.-:-_]*\)', line)
-        if result:
-            imgUrl = result.group().replace('![](', '')
-            imgUrl = imgUrl.replace(')', '')
-            imgName = imgUrl.split('/')
-            pos = len(imgName) - 1
-            img = imgName[pos]
-            imgfile = urllib.request.urlopen(imgUrl)
-            imgout = open(filePath + '/' + img, 'wb')
-            imgout.write(imgfile.read())
-            imgout.close()
-            print('  image downloaded : ' + img)
+        print('Searching images')
+        file = open(fileFullPath, "r")
+        ftmp = open(tempFullPath, "w")
+        for line in file:
 
-    file.close()
+            result = re.search(r'!\[(\w*)\]\([[a-zA-Z.-:-_]*\)', line)
+            if result:
+                imgUrl = result.group().replace('![](', '')
+                imgUrl = imgUrl.replace(')', '')
+                imgName = imgUrl.split('/')
+                pos = len(imgName) - 1
+                img = imgName[pos]
+                imgfile = urllib.request.urlopen(imgUrl)
+                imgLocalUrl = filePath + '/' + img
+                imgout = open(imgLocalUrl, 'wb')
+                imgout.write(imgfile.read())
+                imgout.close()
+                print('  image downloaded : ' + img)
+
+                if import2jingo:
+                    remotefilepath = config['jingo']['imgDir'] + img
+                    remoteImgUrl = config['jingo']['imgUrl'] + img
+                    sftp.put(imgLocalUrl, remotefilepath)
+                    print('    image uploaded on %s' % config['jingo']['host'])
+                    ftmp.write(regex.sub('![image %s](%s)' % (img, remoteImgUrl), line))
+                    print('    image url updated in %s file' % config['format'])
+            else:
+                ftmp.write(line)
+
+        file.close()
+        ftmp.close()
+        os.remove(fileFullPath)
+        shutil.move(tempFullPath, fileFullPath)
+
+        if import2jingo:
+            remotefilepath = config['jingo']['mdUrl'] + padTitle + '.' + config['format']
+            sftp.put(fileFullPath, remotefilepath)
+            print('%s file uploaded on %s' % (config['format'], config['jingo']['host']))
+        print('')
+
+    if import2jingo:
+        sftp.close()
+        transport.close()
 
     print('')
 

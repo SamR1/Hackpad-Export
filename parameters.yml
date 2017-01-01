@@ -5,3 +5,12 @@ format: 'md'
 start: 0
 limit: 50
 encoding: 'Windows-1252'
+jingo:
+  import: False
+  host: ''
+  port: 
+  user: ''
+  password: ''
+  mdUrl: ''
+  imgDir: ''
+  imgUrl: ''

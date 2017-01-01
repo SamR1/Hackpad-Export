@@ -23,7 +23,7 @@ Script to export pads and associated images :
     ```
     * to export all Pads :  
     ```
-    $ python hackpad-exportAllPads
+    $ python hackpad-exportAllPads.py
     ```
 
 All pads for which you have access are exported in **temp** directory with images.

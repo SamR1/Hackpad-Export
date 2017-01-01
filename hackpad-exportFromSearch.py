@@ -27,7 +27,7 @@ with open("parameters.yml", 'r') as stream:
 
 hackpad = Hackpad(config['subdomain'], consumer_key=config['consumer_key'], consumer_secret=config['consumer_secret'])
 keyword = sys.argv[1]
-import2jingo = config['jingo']['import'] and
+import2jingo = config['jingo']['import'] and (config['format'] == 'md')
 tmpPath = tempfile.gettempdir()
 
 if import2jingo:

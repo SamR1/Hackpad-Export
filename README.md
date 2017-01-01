@@ -17,14 +17,14 @@ Script to export pads and associated images :
     * format: 'md', 'html' or 'txt'
 * run the script :
 
-    * to export pads resulting from search :
-```
-$ python hackpad-exportFromSearch.py keyword
-```
-    * to export all Pads : 
-```
-$ python hackpad-exportAllPads
-```   
+    * to export pads resulting from search :  
+    ```
+    $ python hackpad-exportFromSearch.py keyword
+    ```
+    * to export all Pads :  
+    ```
+    $ python hackpad-exportAllPads
+    ```
 
 All pads for which you have access are exported in **temp** directory with images.
 _Be aware of Hackpad.com API parameters (the number of returned results has to be adjusted in the parameter file (no pagination system))_

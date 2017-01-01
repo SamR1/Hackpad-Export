@@ -1,5 +1,5 @@
 # Hackpad-Export
-Script to export pads and associated images, from search on Hackpad
+Script to export pads and associated images, from search on Hackpad.com
 
 ## Prerequisites :
 - Python 3 (tested with 3.5)

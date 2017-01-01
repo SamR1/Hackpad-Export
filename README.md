@@ -26,7 +26,7 @@ Script to export pads and associated images :
     $ python hackpad-exportAllPads.py
     ```
 
-All pads for which you have access are exported in **temp** directory with images.
+All pads for which you have access are exported in **temp** directory with images.  
 _Be aware of Hackpad.com API parameters (the number of returned results has to be adjusted in the parameter file (no pagination system))_
 
 ## Sources

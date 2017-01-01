@@ -16,11 +16,12 @@ Script to export pads and associated images :
     * subdomain: mysubdomain for http://mysubdomain.hackpad.com, leave empty if you're not using a subdomain
     * format: 'md', 'html' or 'txt'
 * run the script :
-    * to export pads resulting from search
+
+    * to export pads resulting from search :
 ```
 $ python hackpad-exportFromSearch.py keyword
 ```
-    * to export all apds
+    * to export all Pads : 
 ```
 $ python hackpad-exportAllPads
 ```   

@@ -11,6 +11,6 @@ jingo:
   port: 
   user: ''
   password: ''
-  mdUrl: ''
+  mdDir: ''
   imgDir: ''
   imgUrl: ''

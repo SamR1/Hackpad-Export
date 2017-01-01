@@ -105,7 +105,7 @@ if len(listPads) > 0:
         shutil.move(tempFullPath, fileFullPath)
 
         if import2jingo:
-            remotefilepath = config['jingo']['mdUrl'] + padTitle + '.' + config['format']
+            remotefilepath = config['jingo']['mdDir'] + padTitle + '.' + config['format']
             sftp.put(fileFullPath, remotefilepath)
             print('%s file uploaded on %s' % (config['format'], config['jingo']['host']))
         print('')

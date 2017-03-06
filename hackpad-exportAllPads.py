@@ -4,6 +4,7 @@ import markdown
 import os
 import re
 import string
+import sys
 import urllib
 import yaml
 
@@ -19,6 +20,10 @@ with open("parameters.yml", 'r') as stream:
         config = yaml.load(stream)
     except yaml.YAMLError as e:
         print(e)
+
+if config['consumer_key'] == '' or config['consumer_secret'] == '':
+    print('Parameters missing. Please complete "parameters.yml" file')
+    sys.exit()
 
 hackpad = Hackpad(config['subdomain'], consumer_key=config['consumer_key'], consumer_secret=config['consumer_secret'])
 

@@ -76,8 +76,11 @@ for padId in listPads:
 
     newFilePath = '/tmp/export-hackpad-allPads/%s' % title
     print('Renaming directory to ' + newFilePath)
-    os.rename(filePath, newFilePath)
-
+    try:
+        os.rename(filePath, newFilePath)
+    except Exception as e:
+        print('ERROR during directory renaming ' + str(e))
+        pass
     print('')
 
 print('=> export done')

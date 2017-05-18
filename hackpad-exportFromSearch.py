@@ -1,4 +1,5 @@
 from hackpad import Hackpad
+import datetime
 import os
 import paramiko
 import re
@@ -45,6 +46,11 @@ nbPads = str(len(listPads))
 print(nbPads + ' pad(s) retrieved')
 print('')
 
+format = "%Y-%m-%d_%H-%M-%S"
+today = datetime.datetime.today()
+today = today.strftime(format)
+mPath = tmpPath + '/export-hackpad_'
+
 if len(listPads) > 0:
 
     if import2jingo:
@@ -64,7 +70,7 @@ if len(listPads) > 0:
         content = hackpad.do_api_request(padUrl, 'GET', params)
         content = content.decode(config['encoding'])
 
-        filePath = '%s/export-hackpad-jingo/%s' % (tmpPath, padTitle)
+        filePath = mPath + '%s_%s/%s' % (keyword, today, padTitle)
         fileFullPath = '%s/%s.%s' % (filePath, padTitle, config['format'])
         tempFullPath = '%s/%s.%s.tmp' % (filePath, padTitle, config['format'])
 

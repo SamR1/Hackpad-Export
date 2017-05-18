@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from hackpad import Hackpad
+import datetime
 import markdown
 import os
 import re
@@ -34,6 +35,10 @@ nbPads = str(len(listPads))
 print(nbPads + ' pad(s) retrieved')
 print('')
 
+format = "%Y-%m-%d_%H-%M-%S"
+today = datetime.datetime.today()
+mainPath = '/tmp/export-hackpad-allPads_' + today.strftime(format) + '/'
+
 for padId in listPads:
 
     print('==> Downloading Pad %s/%s: %s' % (str(listPads.index(padId) + 1), nbPads, padId))
@@ -44,7 +49,7 @@ for padId in listPads:
     content = hackpad.do_api_request(padUrl, 'GET', params)
     content = content.decode(config['encoding'])
 
-    filePath = '/tmp/export-hackpad-allPads/%s' % padId
+    filePath = mainPath + '%s' % padId
     fileFullPath = '%s/%s.%s' % (filePath, padId, 'md')
 
     os.makedirs(filePath, exist_ok=True)
@@ -79,7 +84,7 @@ for padId in listPads:
 
     file.close()
 
-    newFilePath = '/tmp/export-hackpad-allPads/%s' % title
+    newFilePath = mainPath + '%s' % title
     print('Renaming directory to ' + newFilePath)
     try:
         os.rename(filePath, newFilePath)
